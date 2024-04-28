@@ -1,0 +1,20 @@
+#info {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	z-index: 100;
+    color: skyblue;
+	font-size: 25px;
+	display: flex;
+    justify-content: center; 
+	
+}
+.counter-display{
+	width: 200px;
+	height: 50px;
+	background-color: white;
+	border: 1px solid white;
+	border-radius: 30px;
+	padding: 10px 10px 10px 10px;
+	position:center;
+}
