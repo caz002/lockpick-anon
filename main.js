@@ -17,6 +17,17 @@ const matcapGoldTexture = textureLoader.load("./MetalGoldPaint002/MetalGoldPaint
 //set background
 const blue = new THREE.Color( 'skyblue' );
 scene.background = blue;
+
+//image of lock for modeling reference
+const lockmap = new THREE.TextureLoader().load( './lockimage.png' );
+const lockpicmaterial = new THREE.SpriteMaterial( { map: lockmap } );
+
+const lockpicture = new THREE.Sprite( lockpicmaterial );
+lockpicture.position.set(-0.7, 0, 0);
+lockpicture.scale.set(21,14,1);
+lockpicture.visible = false;
+scene.add(lockpicture);
+
 //move around
 const controls = new OrbitControls( camera, renderer.domElement );
 			controls.target.set( 0, 0.5, 0 );
@@ -40,12 +51,14 @@ audioLoader.load( './audio/complete.wav', function( buffer ) {
     sound.setLoop( false );
     sound.setVolume( 0.5 );
 });
+
 //set light
 const light = new THREE.PointLight( 0xffffff, 5, 100 ); // soft white light
 light.position.set(0, 3, 1);
 scene.add( light );
 const loader = new GLTFLoader();
 
+//load cat 3D model
 let cat;
 loader.load( './cat4.glb', function ( gltf ) {
     cat = gltf.scene;
@@ -65,7 +78,7 @@ matpadlock.transparent = true;
 matpadlock.opacity = 0.3;
 const padlock = new THREE.Mesh(geopadlock, matpadlock);
 scene.add(padlock);
-//shitty lock pick
+//green lock pick
 const geometry = new THREE.BoxGeometry(0.2, 0.4, 0.2);
 //const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
 const material = new THREE.MeshBasicMaterial({  color: 0x00ff00 });
@@ -214,6 +227,24 @@ document.onkeydown = function(e){
     if(e.keyCode === 40){
         lockpick.position.y -=0.1;
         handle.position.y -=0.1;
+    }
+    
+}
+
+//button stuff
+
+const button = document.querySelector('button');
+var ref_hidden = true;
+button.addEventListener('click', onButtonClick);
+function onButtonClick() {
+    if(ref_hidden){
+        lockpicture.visible = true;
+        button.textContent = "Hide Reference Image!";
+        ref_hidden = false;
+    }else{
+        lockpicture.visible = false;
+        button.textContent = "Show Reference Image!";
+        ref_hidden = true;
     }
     
 }
