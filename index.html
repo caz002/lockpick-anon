@@ -3,15 +3,25 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="style.css">
-		<title>Lockpickers Anonymous</title>
-
-		<style>
-			body { margin: 0; }
-		</style>
+		<title>Lockpick Simulation</title> 
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<script type="module" src="./main.js"></script>
-		<div id="info"><h1 class="counter-display">(..)</h1></div>
-		<div id="info"><button id="image-button">Show Reference Image!</button></div>
+		<script type="module" src="newlock.js"></script>
+		<div class="topnav">
+			<div class="progress-container" id = "info">
+				<p>PROGRESS > 60%</p>
+				<div class="progress-bar">
+					<div class="progress-fill"></div>
+				</div>
+			</div>	
+			<div class="links" id = "info">
+				<a href = "about.html">ABOUT</a>
+				<a href = "">RESET</a>
+			</div>
+		</div>
+		
 	</body>
 </html>

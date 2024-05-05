@@ -1,20 +1,62 @@
 #info {
-	position: absolute;
-	width: 100%;
-	text-align: center;
 	z-index: 100;
-    color: skyblue;
-	font-size: 25px;
-	display: flex;
-    justify-content: center; 
+}
+body{
+	background-color: #EBE4E6;
+	--darkgrey: #453E40;
+	color: var(--darkgrey);
+	font-family: 'DM Mono';
+	margin: 0;
 	
 }
-.counter-display{
-	width: 200px;
-	height: 50px;
-	background-color: white;
-	border: 1px solid white;
-	border-radius: 30px;
-	padding: 10px 10px 10px 10px;
-	position:center;
+.topnav{
+	display:flex;
+	justify-content: space-around;
+	align-items: flex-end;
+	border-bottom: 1px solid #453E40;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	margin-left: 72px;
+	margin-right: 72px;
+	animation: fadeInAnimation ease 2s;
+	animation-fill-mode: forwards;
+}
+.links{
+	display: flex;
+	justify-content: flex-end;
+	gap:80px;
+}
+.progress-container{
+	width: 60%;
+}
+p{
+	font-size:25px;
+}
+.progress-bar{
+	border-radius:50px;
+	height:30px;
+	border: 1px solid var(--darkgrey);
+}
+.progress-fill{
+	background-color: var(--darkgrey);
+	border-radius:50px;
+	height:30px;
+	width:60%;
+}
+a{
+	color: var(--darkgrey);
+	text-decoration: underline 0.15em rgba(0, 0, 0, 0);
+	font-size: 25px;	
+	transition: text-decoration-color 300ms ease-in-out;
+}
+a:hover{
+	text-decoration-color: var(--darkgrey);
+}
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
