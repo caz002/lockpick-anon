@@ -7,7 +7,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth, window.innerHeight*0.8);
 document.body.appendChild(renderer.domElement);
 
 
@@ -29,13 +29,13 @@ lockpicture.visible = false;
 scene.add(lockpicture);
 
 //move around
-const controls = new OrbitControls( camera, renderer.domElement );
-			controls.target.set( 0, 0.5, 0 );
-			controls.update();
-			controls.enablePan = false;
-			controls.enableDamping = true;
-            controls.enableKeys = false
-//audio
+// const controls = new OrbitControls( camera, renderer.domElement );
+// 			controls.target.set( 0, 0.5, 0 );
+// 			controls.update();
+// 			controls.enablePan = false;
+// 			controls.enableDamping = true;
+//             controls.enableKeys = false
+// //audio
 // create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
 camera.add( listener );
@@ -60,7 +60,7 @@ const loader = new GLTFLoader();
 
 //load cat 3D model
 let cat;
-loader.load( './cat4.glb', function ( gltf ) {
+loader.load( './lock.glb', function ( gltf ) {
     cat = gltf.scene;
     gltf.scene.position.set(0, 0, -1);
 	scene.add( gltf.scene );
@@ -104,7 +104,7 @@ const cylinder = new THREE.Mesh( geocylinder, matcylinder); scene.add( cylinder 
 //first grey cylinder bounding box
 let cylinder1BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
 cylinder1BB.setFromObject(cylinder);
-camera.position.z = 5;
+camera.position.z = 10;
 
 //first gold cylinder thingy
 const topgeocylinder = new THREE.CylinderGeometry( 0.2, 0.2, 0.4, 32 ); 
@@ -207,7 +207,7 @@ function animate(){
     cylinder3BB.copy( cylinder3.geometry.boundingBox).applyMatrix4(cylinder3.matrixWorld);
     console.log(lockpick1BB);
     console.log(lockpick.position);
-    controls.update();
+    //controls.update();
     renderer.render( scene, camera );
 }
 animate();
