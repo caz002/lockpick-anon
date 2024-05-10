@@ -1,3 +1,7 @@
+:root {
+    --my-start-width: 0;
+    --my-end-width: 0;
+}
 #info {
 	z-index: 100;
 }
@@ -71,3 +75,12 @@ a:hover{
 	padding: 20px 20px 20px 20px;
 	border: 1px solid var(--darkgrey);
 }
+.animate {
+	/* Define your CSS animation properties */
+	animation: fill-animation 1s ease-in;
+  }
+  
+  @keyframes fill-animation {
+	from { width: var(--my-start-width); opacity: 0.5;}
+	to { width: var(--my-end-width); opacity: 1;}
+  }
