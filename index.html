@@ -9,17 +9,26 @@
 		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<script type="module" src="newlock.js"></script>
+		<script type="module" src="./js/functions.js"></script>
 		<div class="topnav">
 			<div class="progress-container" id = "info">
-				<p>PROGRESS > 60%</p>
+				<p>PROGRESS > <span id="progress-percentage">0</span>%</p>
 				<div class="progress-bar">
 					<div class="progress-fill"></div>
 				</div>
 			</div>	
 			<div class="links" id = "info">
 				<a href = "about.html">ABOUT</a>
-				<a href = "">RESET</a>
+				<a href = "" id = "reset">RESET</a>
+			</div>
+		</div>
+		<div class="mainpage">
+			<div class="controls">
+				<p>Current Angle: <button id="sub-button">-</button><span id="angle-value">0</span>°<button id="add-button">+</button></p>
+				<p>Use arrow keys to move pick.</p>
+			</div>
+			<div id="lock-simulator">
+				<script type="module" src="./js/newlock.js"></script>
 			</div>
 		</div>
 		

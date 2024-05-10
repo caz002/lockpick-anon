@@ -41,7 +41,7 @@ p{
 	background-color: var(--darkgrey);
 	border-radius:50px;
 	height:30px;
-	width:60%;
+	width:0%;
 }
 a{
 	color: var(--darkgrey);
@@ -59,4 +59,15 @@ a:hover{
     100% {
         opacity: 1;
     }
+}
+.mainpage{
+	display:flex;
+	flex-direction:row;
+	animation: fadeInAnimation ease 2s;
+	animation-fill-mode: forwards;
+}
+.controls{
+	font-size: 12px;
+	padding: 20px 20px 20px 20px;
+	border: 1px solid var(--darkgrey);
 }
