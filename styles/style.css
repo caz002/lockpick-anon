@@ -13,6 +13,8 @@ body{
 	margin: 0;
 	
 }
+
+/* navigation bar */
 .topnav{
 	display:flex;
 	justify-content: space-around;
@@ -70,17 +72,24 @@ a:hover{
 	animation: fadeInAnimation ease 2s;
 	animation-fill-mode: forwards;
 }
+
+/* controls or lefthand menu */
 .controls{
 	font-size: 12px;
 	padding: 20px 20px 20px 20px;
-	border: 1px solid var(--darkgrey);
+	border-right: 1px solid var(--darkgrey);
 }
 .animate {
 	/* Define your CSS animation properties */
 	animation: fill-animation 1s ease-in;
   }
   
-  @keyframes fill-animation {
+@keyframes fill-animation {
 	from { width: var(--my-start-width); opacity: 0.5;}
 	to { width: var(--my-end-width); opacity: 1;}
-  }
+}
+/**********************ABOUT PAGE**************************/
+.main-part, .mainpage{
+	margin-left: 72px;
+	margin-right: 72px;
+}

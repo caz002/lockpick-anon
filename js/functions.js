@@ -1,13 +1,18 @@
-//adds one to angle
+// Current Angle Button
+// adds one to angle
 document.querySelector('#add-button').addEventListener("click", function() {
-    let currVal = Number(document.querySelector('#angle-value').innerText);
-    document.querySelector('#angle-value').innerText = currVal + 1;
-  });
-//subtracts one from angle
+  let currVal = Number(document.querySelector('#angle-value').innerText);
+  document.querySelector('#angle-value').innerText = currVal + 1;
+});
+
+// subtracts one from angle
 document.querySelector('#sub-button').addEventListener("click", function() {
-    let currVal = Number(document.querySelector('#angle-value').innerText);
-    document.querySelector('#angle-value').innerText = currVal - 1;
-  });
+  let currVal = Number(document.querySelector('#angle-value').innerText);
+  document.querySelector('#angle-value').innerText = currVal - 1;
+});
+
+
+// Progress Bar
 let count = 0;
 export function addProgress(){
   document.documentElement.style
@@ -23,7 +28,8 @@ export function addProgress(){
 }
 document.querySelector('#reset').addEventListener("click", function(){
   location.reload();
-})
+});
+// animates progress bar when a new pin reaches the correct height
 export function triggerAnimation() {
   var element = document.querySelector('.progress-fill');
   element.classList.remove('animate');

@@ -1,27 +1,27 @@
+// this file renders padlock and pick
 import * as THREE from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { addProgress,
          triggerAnimation } from "./functions.js";
 
+// set up Scene/Window for rendering
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('lock-simulator').appendChild(renderer.domElement);
 
-//TEXTURES
+// TEXTURES
 const textureLoader = new THREE.TextureLoader();
 const matcapTexture = textureLoader.load("https://bruno-simon.com/prismic/matcaps/3.png");
-const matcapGoldTexture = textureLoader.load("./MetalGoldPaint002/MetalGoldPaint002_Sphere.png")
-//set background
-const blue = new THREE.Color( 'skyblue' );
+const matcapGoldTexture = textureLoader.load("./media/textures/MetalGoldPaint002/MetalGoldPaint002_Sphere.png")
+// set background color
 scene.background = new THREE.Color(0xEBE4E6);
 
-//image of lock for modeling reference
-const lockmap = new THREE.TextureLoader().load( './lockimage.png' );
+// image of lock for modeling reference, not important
+const lockmap = new THREE.TextureLoader().load( './media/images/lockimage.png' );
 const lockpicmaterial = new THREE.SpriteMaterial( { map: lockmap } );
 
 const lockpicture = new THREE.Sprite( lockpicmaterial );
@@ -30,14 +30,7 @@ lockpicture.scale.set(21,14,1);
 lockpicture.visible = false;
 scene.add(lockpicture);
 
-//move around
-// const controls = new OrbitControls( camera, renderer.domElement );
-// 			controls.target.set( 0, 0.5, 0 );
-// 			controls.update();
-// 			controls.enablePan = false;
-// 			controls.enableDamping = true;
-//             controls.enableKeys = false
-// //audio
+// Audio Elements
 // create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
 camera.add( listener );
@@ -48,20 +41,21 @@ const sound = new THREE.Audio( listener );
 // load a sound and set it as the Audio object's buffer
 const audioLoader = new THREE.AudioLoader();
 
-audioLoader.load( './audio/complete.wav', function( buffer ) {
+audioLoader.load( './media/audio/complete.wav', function( buffer ) {
     sound.setBuffer( buffer );
     sound.setLoop( false );
     sound.setVolume( 0.5 );
 });
 
+//GLTF Loader loads 3D imported models
 const loader = new GLTFLoader();
 
-//load cat 3D model
-let cat;
-loader.load( './models/locknopadlock.glb', function ( gltf ) {
-    cat = gltf.scene;
+// load lock model
+let lockpad;
+loader.load( './media/models/locknopadlock.glb', function ( gltf ) {
+    lockpad = gltf.scene;
     gltf.scene.position.set(0, 0, -1);
-    //adds wireframe mode, maybe put this as a button?
+    //uncomment to add wireframe mode
     // gltf.scene.traverse((node) => {
     //     if (!node.isMesh) return;
     //     node.material.wireframe = true;
@@ -73,17 +67,17 @@ loader.load( './models/locknopadlock.glb', function ( gltf ) {
 	console.error( error );
 
 } );
-camera.position.z = 5;
-//padlock body part, just a giant box
+
+// padlock body part, just a giant box
 const padlockgeo = new THREE.BoxGeometry(6, 6, 0.2);
 const padlockmat = new THREE.MeshBasicMaterial({  color: 0x000000, wireframe: true });
 const padlock = new THREE.Mesh( padlockgeo, padlockmat);
 scene.add(padlock);
 
-// load lock pick
+// load lock pick(grey thing)
 let x_lock_offset = 1.9;
 let lockpick2;
-loader.load( './models/pickv1.glb', function ( gltf ) {
+loader.load( './media/models/pickv1.glb', function ( gltf ) {
     lockpick2 = gltf.scene;
     gltf.scene.position.set(7+x_lock_offset, 0, 0.5);
     gltf.scene.scale.set(3, 3, 3);
@@ -93,7 +87,7 @@ loader.load( './models/pickv1.glb', function ( gltf ) {
 	console.error( error );
 } );
 
-//green lock pick(collision detection box for now, will try to make more accurate later)
+// creates a collision detection box around the lock pick, should try to make more accurate later
 const geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
 const material = new THREE.MeshBasicMaterial({  color: 0x00ff00, visible:false});
 const lockpick = new THREE.Mesh( geometry, material);
@@ -101,14 +95,13 @@ const lockpick = new THREE.Mesh( geometry, material);
 lockpick.position.set(2.5+x_lock_offset,-0.15,0.5);
 scene.add(lockpick);
 
-//lock pick bounding box
+// lock pick bounding box
 let lockpick1BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
 lockpick1BB.setFromObject(lockpick);
 
 /*
 /////////////////////////THE SEVEN CYLINDERS////////////////////////////
-/
- */
+/*/
 //Materials
 const r = 0.12;
 const start_height = 0.5;
@@ -128,10 +121,7 @@ for(let i = 0; i < 7; i++){
     scene.add(cArray[i]);
 }
 
-//counter to see how many pins you have clicked
-// let counterDisplayElem = document.querySelector('.counter-display');
-// let count = 0;
-
+// repeats over and over to generate "animations"
 function animate(){
     requestAnimationFrame( animate );
     //update cylinder locations from collisions betwee pick and cylinder
@@ -150,29 +140,26 @@ function animate(){
         }
     }
     lockpick1BB.copy( lockpick.geometry.boundingBox).applyMatrix4(lockpick.matrixWorld);
-    //controls.update();
     renderer.render( scene, camera );
 }
 animate();
 document.onkeydown = function(e){
-    //left arrow
+    //move lockpick left with left arrow
     if(e.keyCode === 37){
         if (lockpick.position.x >= 0.5){
             lockpick.position.x -=0.1;
             lockpick2.position.x -=0.1;
         }
     }
-    //right arrow
+    //move lockpick right with right arrow
     if(e.keyCode === 39){
         lockpick.position.x +=0.1;
         lockpick2.position.x +=0.1;
     }
-    //up arrow
+    //move lockpick up with up arrow
     if(e.keyCode === 38){
-        //if(lockpick.position.y <= 0.2){
-            lockpick.position.y +=0.1;
-            lockpick2.position.y +=0.1;
-        //}
+        lockpick.position.y +=0.1;
+        lockpick2.position.y +=0.1;
     }
     if(e.keyCode === 40){
         if(lockpick.position.y >=-0.4){
@@ -182,6 +169,8 @@ document.onkeydown = function(e){
     }
     
 }
+
+//Buttons controling the angle at which the pick is at
 document.querySelector('#add-button').addEventListener("click", function() {
     let currVal = Number(document.querySelector('#angle-value').innerText);
     lockpick2.rotateZ(-Math.PI/180);
@@ -190,8 +179,8 @@ document.querySelector('#add-button').addEventListener("click", function() {
     let currVal = Number(document.querySelector('#angle-value').innerText);
     lockpick2.rotateZ(Math.PI/180);
   });
-//button stuff
 
+// uncomment to see reference image, may or may not work
 // const button = document.querySelector('button');
 // var ref_hidden = true;
 // button.addEventListener('click', onButtonClick);

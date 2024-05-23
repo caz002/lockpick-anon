@@ -1,3 +1,4 @@
+//this file is not important and is not being used, its mainly to check if three.js is working on your computer, add it as a script to one of the html files and a rotating cube should appear
 import * as THREE from 'three';
 
 const scene = new THREE.Scene();
