@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { addProgress, triggerAnimation } from "./functions.js";
 
 // Global variables
-let scene, camera, renderer, lockpad, lockpick, lockpick2, lockpick1BB, sound, cArray = [], cBBoxs = [], cclicked = Array(7).fill(false);
+let scene, camera, renderer, lockpad, lockPickCollider, lockPickModel, lockPickBoundingBox, sound, cArray = [], cBBoxs = [], cclicked = Array(7).fill(false);
 const x_lock_offset = 1.9;
 const start_height = 0.5;
 const r = 0.12;
@@ -56,7 +56,7 @@ function loadModels() {
     }, undefined, console.error);
 
     loader.load('./media/models/pickv1.glb', function(gltf) {
-        lockpick2 = gltf.scene;
+        lockPickModel = gltf.scene;
         gltf.scene.position.set(7 + x_lock_offset, 0, 0.5);
         gltf.scene.scale.set(3, 3, 3);
         gltf.scene.rotateZ(Math.PI);
@@ -73,12 +73,12 @@ function createLockAndPick() {
 
     geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2); // Initialize global geometry variable
     material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: false }); // Initialize global material variable
-    lockpick = new THREE.Mesh(geometry, material);
-    lockpick.position.set(2.5 + x_lock_offset, -0.15, 0.5);
-    scene.add(lockpick);
+    lockPickCollider = new THREE.Mesh(geometry, material);
+    lockPickCollider.position.set(2.5 + x_lock_offset, -0.15, 0.5);
+    scene.add(lockPickCollider);
 
-    lockpick1BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
-    lockpick1BB.setFromObject(lockpick);
+    lockPickBoundingBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
+    lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 
 // Create cylinders
@@ -105,28 +105,28 @@ function onWindowResize() {
 
 // Handle key press
 function onKeyPress(e) {
-    if (e.keyCode === 37 && lockpick.position.x >= 0.5) {
-        lockpick.position.x -= 0.1;
-        lockpick2.position.x -= 0.1;
+    if (e.keyCode === 37 && lockPickCollider.position.x >= 0.5) {
+        lockPickCollider.position.x -= 0.1;
+        lockPickModel.position.x -= 0.1;
     } else if (e.keyCode === 39) {
-        lockpick.position.x += 0.1;
-        lockpick2.position.x += 0.1;
+        lockPickCollider.position.x += 0.1;
+        lockPickModel.position.x += 0.1;
     } else if (e.keyCode === 38) {
-        lockpick.position.y += 0.1;
-        lockpick2.position.y += 0.1;
-    } else if (e.keyCode === 40 && lockpick.position.y >= -0.4) {
-        lockpick.position.y -= 0.1;
-        lockpick2.position.y -= 0.1;
+        lockPickCollider.position.y += 0.1;
+        lockPickModel.position.y += 0.1;
+    } else if (e.keyCode === 40 && lockPickCollider.position.y >= -0.4) {
+        lockPickCollider.position.y -= 0.1;
+        lockPickModel.position.y -= 0.1;
     }
 }
 
 // Handle button clicks for angle adjustment
 function setupAngleButtons() {
     document.querySelector('#add-button').addEventListener("click", () => {
-        lockpick2.rotateZ(-Math.PI / 180);
+        lockPickModel.rotateZ(-Math.PI / 180);
     });
     document.querySelector('#sub-button').addEventListener("click", () => {
-        lockpick2.rotateZ(Math.PI / 180);
+        lockPickModel.rotateZ(Math.PI / 180);
     });
 }
 
@@ -138,7 +138,7 @@ function animate() {
         if (cArray[i].position.y > start_height && !cclicked[i]) {
             cArray[i].position.y -= 0.01;
         }
-        if (lockpick1BB.intersectsBox(cBBoxs[i]) && !cclicked[i]) {
+        if (lockPickBoundingBox.intersectsBox(cBBoxs[i]) && !cclicked[i]) {
             cArray[i].position.y += 0.1;
         }
         cBBoxs[i].copy(cArray[i].geometry.boundingBox).applyMatrix4(cArray[i].matrixWorld);
@@ -149,7 +149,7 @@ function animate() {
         }
     }
 
-    lockpick1BB.copy(lockpick.geometry.boundingBox).applyMatrix4(lockpick.matrixWorld);
+    lockPickBoundingBox.copy(lockPickCollider.geometry.boundingBox).applyMatrix4(lockPickCollider.matrixWorld);
     renderer.render(scene, camera);
 }
 
