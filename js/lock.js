@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { addProgress, triggerAnimation } from "./functions.js";
+import { changeAngleValue } from "./angle-buttons.js";
 
 // Global variables
 let scene, camera, renderer, lockpad, lockPickCollider, lockPickModel, lockPickBoundingBox, sound, cArray = [], cBBoxs = [], cclicked = Array(7).fill(false);
@@ -118,9 +119,24 @@ function onKeyPress(e) {
         lockPickCollider.position.y -= 0.1;
         lockPickModel.position.y -= 0.1;
     }
+    // handle button presses to change the current angle
+    // if "[" then decrease angle
+    if (e.keyCode === 219) {
+        // Decrease angle
+        lockPickModel.rotateZ((-Math.PI / 180));
+        changeAngleValue(1)
+        // console.log(lockPickModel.rotation.z)
+    } else if (e.keyCode === 221) {
+        lockPickModel.rotateZ(Math.PI / 180);
+        changeAngleValue(-1)
+        // console.log(lockPickModel.rotation.z)
+    }
+    
 }
 
-// Handle button clicks for angle adjustment
+/*
+Inititalizes the lockpick's initial angle.
+*/
 function setupAngleButtons() {
     document.querySelector('#add-button').addEventListener("click", () => {
         lockPickModel.rotateZ(-Math.PI / 180);
