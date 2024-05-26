@@ -10,7 +10,6 @@
   },
   "homepage": "https://caz002.github.io/lockpick-anon",
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d ."
   }
 }
