@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../styles/style.css">
+		<title>Lockpick Simulation</title> 
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<script type="module" src="../js/functions.js"></script>
+		<div class="topnav">
+			<div class="progress-container" id = "info">
+				<p>PROGRESS &gt; <span id="progress-percentage">0</span>%</p>
+				<div class="progress-bar">
+					<div class="progress-fill"></div>
+				</div>
+			</div>	
+			<div class="links" id = "infom">
+				<a href = "about.html">ABOUT</a>
+				<a href = "" id = "reset">RESET</a>
+			</div>
+		</div>
+		<div class="mainpage">
+			<div class="controls">
+				<p>Current Angle: 
+					<button id="sub-button">-</button>
+					<span id="angle-value">0</span>°
+					<button id="add-button">+</button></p>
+				<p>Use arrow keys to move pick.</p>
+				<p>Use "[,]" keys to change the angle of the pick.</p>
+			</div>
+			<div id="lock-simulator">
+				<script type="module" src="../js/lock.js"></script>
+			</div>
+		</div>
+		
+	</body>
+</html>
