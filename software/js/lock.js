@@ -4,7 +4,7 @@ import { addProgress, triggerAnimation } from "./functions.js";
 
 // Variables for scene and Three.js objects
 let scene, camera, renderer;
-let lockPad, lockPickCollider, lockPickModel, lockPickBoundingBox;
+let lockPad, lockPickCollider, lockPickModel, lockPickBoundingBox, lockPickGroup;
 let sound;
 let cArray = [], cBBoxs = [], cClicked = Array(7).fill(false);
 const xLockOffset = 1.9;
@@ -16,7 +16,7 @@ let geometry, material;
 function initScene() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 7;
 
     renderer = new THREE.WebGLRenderer();
     const container = document.getElementById('lock-simulator');
@@ -61,10 +61,13 @@ function loadModels() {
 
     loader.load('./media/models/pickv1.glb', function(gltf) {
         lockPickModel = gltf.scene;
-        gltf.scene.position.set(7 + xLockOffset, 0, 0.5);
-        gltf.scene.scale.set(3, 3, 3);
-        gltf.scene.rotateZ(Math.PI);
+        lockPickModel.position.set(7 + xLockOffset, 0, 0.5);
+        lockPickModel.scale.set(3, 3, 3);
+        lockPickModel.rotation.z = Math.PI;
         scene.add(gltf.scene);
+
+        // Create the lockPickCollider with the same size and position as lockPickModel
+        createLockPickCollider();
     }, undefined, console.error);
 }
 
@@ -76,11 +79,11 @@ function createLockAndPick() {
     scene.add(padlock);
 
     // Create an Object3D to hold the lock pick collider and handle its transformations
-    const lockPickGroup = new THREE.Object3D();
+    lockPickGroup = new THREE.Object3D();
     scene.add(lockPickGroup);
 
     geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
-    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: false });
     lockPickCollider = new THREE.Mesh(geometry, material);
     lockPickCollider.position.set(2.5 + xLockOffset, -0.15, 0.5);
     lockPickGroup.add(lockPickCollider);
@@ -92,22 +95,34 @@ function createLockAndPick() {
         lockPickBoundingBox.setFromObject(lockPickCollider);
     }
 
-    // Rotate the lock pick and update the bounding box
-    function rotateLockPick(angle) {
-        lockPickGroup.rotation.z += angle;
-        updateBoundingBox();
+    updateBoundingBox();
+}
+
+// Create lock pick collider
+function createLockPickCollider() {
+    geometry = new THREE.BoxGeometry(4, 0.1, 0.2);
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    lockPickCollider = new THREE.Mesh(geometry, material);
+    lockPickCollider.position.copy(lockPickModel.position);
+    lockPickCollider.scale.copy(lockPickModel.scale);
+    lockPickCollider.rotation.copy(lockPickModel.rotation);
+    scene.add(lockPickCollider);
+    lockPickGroup.add(lockPickCollider);
+    lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
+
+    // Update function to synchronize the bounding box with the collider
+    function updateBoundingBox() {
+        lockPickBoundingBox.setFromObject(lockPickCollider);
     }
 
-    // Setup buttons to control rotation
-    document.querySelector('#add-button').addEventListener("click", () => {
-        rotateLockPick(-Math.PI / 180);
-    });
-
-    document.querySelector('#sub-button').addEventListener("click", () => {
-        rotateLockPick(Math.PI / 180);
-    });
-
     updateBoundingBox();
+}
+
+// Change angle value in the UI
+function changeAngleValue(change) {
+    let angleElement = document.querySelector('#angle-value');
+    let currVal = Number(angleElement.innerText);
+    angleElement.innerText = currVal + change;
 }
 
 // Create cylinders
@@ -147,7 +162,30 @@ function onKeyPress(e) {
         lockPickCollider.position.y -= 0.1;
         lockPickModel.position.y -= 0.1;
     }
-    
+
+    // Handle button presses to change the current angle
+    // If "[" then decrease angle
+    if (e.keyCode === 219) {
+        // Decrease angle
+        rotateLockPick(-Math.PI / 180);
+        changeAngleValue(1);
+    } else if (e.keyCode === 221) {
+        // Increase angle
+        rotateLockPick(Math.PI / 180);
+        changeAngleValue(-1);
+    }
+}
+
+// Rotate the lock pick and update the bounding box
+function rotateLockPick(angle) {
+    console.log(lockPickGroup.position.x, lockPickGroup.position.y, lockPickGroup.position.z);
+
+    const vec = new THREE.Vector3(0, 0, 1);
+    lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
+
+    // lockPickCollider.rotation.z += angle;
+    // lockPickModel.rotation.z += angle;
+    lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 
 // Animation loop
