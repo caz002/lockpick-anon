@@ -194,13 +194,43 @@ function onKeyPress(e) {
 
 // Rotate the lock pick and update the bounding box
 function rotateLockPick(angle) {
-    console.log(lockPickGroup.position.x, lockPickGroup.position.y, lockPickGroup.position.z);
-
     const vec = new THREE.Vector3(0, 0, 1);
     lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
 
     lockPickCollider.rotation.z += angle;
     lockPickModel.rotation.z += angle;
+    lockPickBoundingBox.setFromObject(lockPickCollider);
+}
+
+export function adjustBoundingBoxToCenter(index) {
+    if (index < 0 || index >= cArray.length) {
+        console.error('Index out of bounds');
+        return;
+    }
+
+    const object = cArray[index];
+    const objectCenter = new THREE.Vector3();
+    object.geometry.computeBoundingBox();
+    object.geometry.boundingBox.getCenter(objectCenter);
+    object.localToWorld(objectCenter);
+
+    // Calculate the offset needed to align the left edge of the bounding box to the center of the object
+    const offsetX = objectCenter.x - lockPickBoundingBox.min.x;
+    const offsetY = objectCenter.y - (lockPickBoundingBox.max.y - lockPickBoundingBox.min.y) / 2;
+    const offsetZ = objectCenter.z - lockPickBoundingBox.min.z;
+
+    // Adjust the position of the bounding box
+    lockPickCollider.position.set(offsetX, offsetY, offsetZ);
+    lockPickBoundingBox.setFromObject(lockPickCollider);
+}
+
+
+export function setRotationLockPick(angle) {
+    const vec = new THREE.Vector3(0, 0, 1);
+    lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
+
+    lockPickCollider.rotation.z = angle;
+    lockPickModel.rotation.z = angle;
     lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 

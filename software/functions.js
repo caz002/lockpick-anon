@@ -1,5 +1,8 @@
 
 // Current Angle Button
+
+import { adjustBoundingBoxToCenter } from "./lock";
+
 // adds one to angle
 console.log("functions.js")
 document.querySelector('#add-button').addEventListener("click", function() {
@@ -43,7 +46,13 @@ document.querySelector('#connect-port').addEventListener("click", async function
                       break;
                   }
                   const text = new TextDecoder().decode(value);
-                  console.log(text);
+                  const textArray = text.split(" ");
+                  console.log(textArray);
+                  // (angle(0 - 60) pin(1 - 6))
+                                    
+                  setRotationLockPick(textArray[0] % 5);
+                  adjustBoundingBoxToCenter(textArray[1] - 1);
+
                   outputElement.textContent = text;
               }
           } catch (error) {
