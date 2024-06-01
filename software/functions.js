@@ -66,11 +66,11 @@ let count = 0;
 export function addProgress(){
   document.documentElement.style
     .setProperty('--my-start-width', `${count}%`);
-  count += 14;
-  document.querySelector('#progress-percentage').innerText = count;
-  document.querySelector('.progress-fill').style.width = `${count}%`;
+  count += 100.0/7.0;
+  document.querySelector('#progress-percentage').innerText = Math.floor(count);
+  document.querySelector('.progress-fill').style.width = `${Math.floor(count)}%`;
   document.documentElement.style
-    .setProperty('--my-end-width', `${count}%`);
+    .setProperty('--my-end-width', `${Math.floor(count)}%`);
   console.log(getComputedStyle(document.body).getPropertyValue('--my-start-width'));
   console.log(getComputedStyle(document.body).getPropertyValue('--my-end-width'));
   triggerAnimation();

@@ -4,11 +4,11 @@ import { addProgress, triggerAnimation } from "./functions.js";
 
 // Variables for scene and Three.js objects
 let scene, camera, renderer;
-let lockPad, lockPickCollider, lockPickModel, lockPickBoundingBox, lockPickGroup;
+let lockPad, lockPickCollider, lockPickModel, lockPickBoundingBox, lockPickGroup, springModel;
 let sound;
-let cArray = [], cBBoxs = [], cClicked = Array(7).fill(false);
+let cArray = [], cBBoxs = [], sArray = [], cClicked = Array(7).fill(false);
 const xLockOffset = 1.9;
-const startHeight = 0.5;
+const startHeight = 0.2;
 const r = 0.12;
 let geometry, material;
 
@@ -49,26 +49,39 @@ function loadAudio() {
     });
 }
 
-// Load models
+// load Models
 function loadModels() {
+    const promises = [];
     const loader = new GLTFLoader();
-
-    loader.load('./media/models/locknopadlock.glb', function(gltf) {
-        lockPad = gltf.scene;
-        gltf.scene.position.set(0, 0, -1);
-        scene.add(gltf.scene);
-    }, undefined, console.error);
-
-    loader.load('./media/models/pickv1.glb', function(gltf) {
-        lockPickModel = gltf.scene;
-        lockPickModel.position.set(7 + xLockOffset, 0, 0.5);
-        lockPickModel.scale.set(3, 3, 3);
-        lockPickModel.rotation.z = Math.PI;
-        scene.add(gltf.scene);
-
-        // Create the lockPickCollider with the same size and position as lockPickModel
-        createLockPickCollider();
-    }, undefined, console.error);
+    promises.push(new Promise((resolve, reject) => {
+        loader.load('./media/models/locknopadlock.glb', function(gltf) {
+            lockPad = gltf.scene;
+            gltf.scene.position.set(0, 0, -1);
+            scene.add(gltf.scene);
+            resolve(gltf);
+        }, undefined, reject);
+    }));
+    promises.push(new Promise((resolve, reject) => {
+        loader.load('./media/models/pickv1.glb', function(gltf) {
+            lockPickModel = gltf.scene;
+            gltf.scene.position.set(7 + xLockOffset, 0, 0.5);
+            gltf.scene.scale.set(3, 3, 3);
+            gltf.scene.rotateZ(Math.PI);
+            scene.add(gltf.scene);
+            resolve(gltf);
+        }, undefined, reject);
+    }));
+    promises.push(new Promise((resolve, reject) => {
+        loader.load('../media/models/spring.glb', function(gltf){
+            springModel = gltf.scene;
+            for(let i = 0; i < 7; i++){
+                sArray.push(springModel.clone());
+                scene.add(sArray[i]);
+            }
+            resolve(gltf);
+        }, undefined, reject);
+    }));
+    return Promise.all(promises);
 }
 
 // Create lock and pick
@@ -136,6 +149,8 @@ function createCylinders(matcapGoldTexture) {
         cArray[i].position.set(i / 2.2 - 0.75, startHeight, 0.5);
         cBBoxs.push(new THREE.Box3().setFromObject(cArray[i]));
         scene.add(cArray[i]);
+        sArray[i].children[0].scale.set(.25, 0.2, 0.25);
+        sArray[i].children[0].position.set(i / 2.2 - 0.75, startHeight + 2, 0.5);
     }
 }
 
@@ -195,12 +210,20 @@ function animate() {
     for (let i = 0; i < 7; i++) {
         if (cArray[i].position.y > startHeight && !cClicked[i]) {
             cArray[i].position.y -= 0.01;
+            let numerator = (sArray[i].children[0].position.y - (cArray[i].position.y+0.8));
+            sArray[i].children[0].scale.y = numerator/(sArray[i].children[0].position.y-1.2)*0.2;
+
+            // console.log("cylinder: " + cArray[i].position.y);
+            // console.log("sArray[i].children[0].position.y: " + sArray[i].children[0].position.y);
+            // console.log("numerator: " + numerator);
+            // console.log("sArray[i].children[0].position.y-1.2: " + (sArray[i].children[0].position.y-1.2));
         }
         if (lockPickBoundingBox.intersectsBox(cBBoxs[i]) && !cClicked[i]) {
-            cArray[i].position.y += 0.1;
+            cArray[i].position.y += 0.05;
         }
         cBBoxs[i].copy(cArray[i].geometry.boundingBox).applyMatrix4(cArray[i].matrixWorld);
-        if (cArray[i].position.y >= 2 && !cClicked[i]) {
+        //modify the number below to set the height of the pins
+        if (cArray[i].position.y >= 1 && !cClicked[i]) {
             cClicked[i] = true;
             sound.play();
             addProgress();
@@ -216,14 +239,16 @@ function init() {
     initScene();
     const textures = loadTextures();
     loadAudio();
-    loadModels();
-    createLockAndPick();
-    createCylinders(textures.matcapGoldTexture);
+    
+    loadModels().then(function(gltfs){
+        createLockAndPick();
+        createLockPickCollider();
+        createCylinders(textures.matcapGoldTexture);
+        animate();
+    })
 
     window.addEventListener('resize', onWindowResize, false);
     document.onkeydown = onKeyPress;
-
-    animate();
 }
 
 init();

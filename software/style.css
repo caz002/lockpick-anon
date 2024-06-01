@@ -1,6 +1,7 @@
 :root {
     --my-start-width: 0;
     --my-end-width: 0;
+    --darkgrey:#453E40;
 }
 
 #info {
@@ -9,7 +10,7 @@
 
 body {
     background-color: #EBE4E6;
-    --darkgrey: #453E40;
+
     color: var(--darkgrey);
     font-family: 'DM Mono';
     margin: 0;
@@ -41,8 +42,10 @@ html, body {
 
 .links {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-around;
     gap: 80px;
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 .progress-container {
@@ -98,6 +101,7 @@ a:hover {
     font-size: 12px;
     padding: 20px;
     border-right: 1px solid var(--darkgrey);
+    width: 10%;
 }
 
 .animate {
