@@ -95,20 +95,20 @@ function createLockAndPick() {
     lockPickGroup = new THREE.Object3D();
     scene.add(lockPickGroup);
 
-    geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
-    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: false });
-    lockPickCollider = new THREE.Mesh(geometry, material);
-    lockPickCollider.position.set(2.5 + xLockOffset, -0.15, 0.5);
-    lockPickGroup.add(lockPickCollider);
+    // geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
+    // material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: true });
+    // lockPickCollider = new THREE.Mesh(geometry, material);
+    // lockPickCollider.position.set(2.5 + xLockOffset, -0.15, 0.5);
+    // lockPickGroup.add(lockPickCollider);
 
-    lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
+    // lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
 
-    // Update function to synchronize the bounding box with the collider
-    function updateBoundingBox() {
-        lockPickBoundingBox.setFromObject(lockPickCollider);
-    }
+    // // Update function to synchronize the bounding box with the collider
+    // function updateBoundingBox() {
+    //     lockPickBoundingBox.setFromObject(lockPickCollider);
+    // }
 
-    updateBoundingBox();
+    // updateBoundingBox();
 }
 
 // Create lock pick collider
@@ -120,7 +120,7 @@ function createLockPickCollider() {
     lockPickCollider.scale.copy(lockPickModel.scale);
     lockPickCollider.rotation.copy(lockPickModel.rotation);
     scene.add(lockPickCollider);
-    lockPickGroup.add(lockPickCollider);
+    //lockPickGroup.add(lockPickCollider);
     lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
 
     // Update function to synchronize the bounding box with the collider
@@ -198,8 +198,8 @@ function rotateLockPick(angle) {
     const vec = new THREE.Vector3(0, 0, 1);
     lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
 
-    // lockPickCollider.rotation.z += angle;
-    // lockPickModel.rotation.z += angle;
+    lockPickCollider.rotation.z += angle;
+    lockPickModel.rotation.z += angle;
     lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 
