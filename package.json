@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
-    "vite": "^5.2.11"
+    "vite": "^5.2.12"
   },
   "homepage": "https://caz002.github.io/lockpick-anon",
   "scripts": {
