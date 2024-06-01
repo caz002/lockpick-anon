@@ -16,7 +16,7 @@ let geometry, material;
 function initScene() {
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 2;
+    camera.position.z = 7;
 
     renderer = new THREE.WebGLRenderer();
     const container = document.getElementById('lock-simulator');
