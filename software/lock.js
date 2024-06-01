@@ -72,7 +72,7 @@ function loadModels() {
         }, undefined, reject);
     }));
     promises.push(new Promise((resolve, reject) => {
-        loader.load('../media/models/spring.glb', function(gltf){
+        loader.load('./media/models/spring.glb', function(gltf){
             springModel = gltf.scene;
             for(let i = 0; i < 7; i++){
                 sArray.push(springModel.clone());
