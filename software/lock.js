@@ -95,32 +95,33 @@ function createLockAndPick() {
     lockPickGroup = new THREE.Object3D();
     scene.add(lockPickGroup);
 
-    // geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
-    // material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: true });
-    // lockPickCollider = new THREE.Mesh(geometry, material);
-    // lockPickCollider.position.set(2.5 + xLockOffset, -0.15, 0.5);
-    // lockPickGroup.add(lockPickCollider);
+    geometry = new THREE.BoxGeometry(3.25, 0.4, 0.2);
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, visible: false });
+    lockPickCollider = new THREE.Mesh(geometry, material);
+    lockPickCollider.position.set(2.5 + xLockOffset, -0.15, 0.5);
+    lockPickGroup.add(lockPickCollider);
 
-    // lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
+    lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
 
-    // // Update function to synchronize the bounding box with the collider
-    // function updateBoundingBox() {
-    //     lockPickBoundingBox.setFromObject(lockPickCollider);
-    // }
+    // Update function to synchronize the bounding box with the collider
+    function updateBoundingBox() {
+        lockPickBoundingBox.setFromObject(lockPickCollider);
+    }
 
-    // updateBoundingBox();
+    updateBoundingBox();
 }
 
 // Create lock pick collider
 function createLockPickCollider() {
     geometry = new THREE.BoxGeometry(4, 0.1, 0.2);
-    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible:false });
     lockPickCollider = new THREE.Mesh(geometry, material);
     lockPickCollider.position.copy(lockPickModel.position);
     lockPickCollider.scale.copy(lockPickModel.scale);
     lockPickCollider.rotation.copy(lockPickModel.rotation);
     scene.add(lockPickCollider);
-    //lockPickGroup.add(lockPickCollider);
+    lockPickGroup.add(lockPickCollider);
+    lockPickGroup.add(lockPickModel);
     lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
 
     // Update function to synchronize the bounding box with the collider
@@ -198,8 +199,8 @@ function rotateLockPick(angle) {
     const vec = new THREE.Vector3(0, 0, 1);
     lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
 
-    lockPickCollider.rotation.z += angle;
-    lockPickModel.rotation.z += angle;
+    //lockPickCollider.rotation.z += angle;
+    //lockPickModel.rotation.z += angle;
     lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 
@@ -213,10 +214,6 @@ function animate() {
             let numerator = (sArray[i].children[0].position.y - (cArray[i].position.y+0.8));
             sArray[i].children[0].scale.y = numerator/(sArray[i].children[0].position.y-1.2)*0.2;
 
-            // console.log("cylinder: " + cArray[i].position.y);
-            // console.log("sArray[i].children[0].position.y: " + sArray[i].children[0].position.y);
-            // console.log("numerator: " + numerator);
-            // console.log("sArray[i].children[0].position.y-1.2: " + (sArray[i].children[0].position.y-1.2));
         }
         if (lockPickBoundingBox.intersectsBox(cBBoxs[i]) && !cClicked[i]) {
             cArray[i].position.y += 0.05;
