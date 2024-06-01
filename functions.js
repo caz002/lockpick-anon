@@ -18,7 +18,7 @@ document.querySelector('#connect-port').addEventListener("click", async function
 
   async function requestSerialPort() {
       try {
-          const filters = [{ usbVendorId: 0x1a86 }];
+          const filters = [{ usbVendorId: 0x2341 }];
           port = await navigator.serial.requestPort({ filters });
           console.log("Port selected:", port);
 
