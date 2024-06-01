@@ -114,14 +114,14 @@ function createLockAndPick() {
 // Create lock pick collider
 function createLockPickCollider() {
     geometry = new THREE.BoxGeometry(4, 0.1, 0.2);
-    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible:false });
+    material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true});
     lockPickCollider = new THREE.Mesh(geometry, material);
     lockPickCollider.position.copy(lockPickModel.position);
     lockPickCollider.scale.copy(lockPickModel.scale);
     lockPickCollider.rotation.copy(lockPickModel.rotation);
     scene.add(lockPickCollider);
-    lockPickGroup.add(lockPickCollider);
-    lockPickGroup.add(lockPickModel);
+    //lockPickGroup.add(lockPickCollider);
+    //lockPickGroup.add(lockPickModel);
     lockPickBoundingBox = new THREE.Box3().setFromObject(lockPickCollider);
 
     // Update function to synchronize the bounding box with the collider
@@ -199,8 +199,8 @@ function rotateLockPick(angle) {
     const vec = new THREE.Vector3(0, 0, 1);
     lockPickGroup.applyMatrix4(new THREE.Matrix4().makeRotationAxis(vec, 2*angle));
 
-    //lockPickCollider.rotation.z += angle;
-    //lockPickModel.rotation.z += angle;
+    lockPickCollider.rotation.z += angle;
+    lockPickModel.rotation.z += angle;
     lockPickBoundingBox.setFromObject(lockPickCollider);
 }
 
